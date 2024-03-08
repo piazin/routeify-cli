@@ -1,0 +1,25 @@
+{
+  "name": "routeify-cli",
+  "version": "1.0.0",
+  "description": " A CLI tool to generate routeify-express project",
+  "main": "dist/index.js",
+  "bin": {
+    "routeify": "dist/index.js"
+  },
+  "scripts": {
+    "test": "exit 0",
+    "deploy": "tsup && npm version patch && npm publish"
+  },
+  "keywords": [
+    "routeify-express",
+    "express",
+    "cli"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.11.25",
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.2"
+  }
+}
