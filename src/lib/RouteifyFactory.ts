@@ -44,7 +44,6 @@ export class RouteifyFactory {
   private async initPackageManager() {
     const packageManager =
       this.flags.find((f) => f.flag === "-p")?.value || "npm";
-    const execInstall = packageManager === "pnpm" ? "pnpm dlx" : "npx";
     const initCommand = packageManager === "pnpm" ? "init" : "init -y";
     const installCommand = packageManager === "npm" ? "install" : "add";
 
@@ -60,7 +59,7 @@ export class RouteifyFactory {
     );
 
     await exec(
-      `cd ${this.projectName} && ${execInstall} tsc --init --experimentalDecorators`
+      `cd ${this.projectName} && npx tsc --init --experimentalDecorators`
     );
   }
 
