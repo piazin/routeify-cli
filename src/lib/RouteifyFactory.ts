@@ -30,13 +30,15 @@ export class RouteifyFactory {
   }
 
   private async createNewProject() {
-    log.startSpinner("we are creating your project...");
+    log.startSpinner("We are creating your project...");
     await this.createFolders();
     await this.createFiles();
+    await this.initGit();
     await this.initPackageManager();
+    await this.installDependencies();
     log.stopSpinner();
-    log.white("Project created successfully");
     log.green(`
+      ${this.projectName} was created successfully.
       cd ${this.projectName}
     `);
   }
@@ -45,10 +47,22 @@ export class RouteifyFactory {
     const packageManager =
       this.flags.find((f) => f.flag === "-p")?.value || "npm";
     const initCommand = packageManager === "pnpm" ? "init" : "init -y";
-    const installCommand = packageManager === "npm" ? "install" : "add";
 
-    log.blue(`📦 Initializing ${packageManager} and installing dependencies`);
+    log.blue(`📦 Initializing ${packageManager}`);
     await exec(`cd ${this.projectName} && ${packageManager} ${initCommand}`);
+  }
+
+  private async installDependencies() {
+    const skip = this.flags.find((f) => f.flag === "--no-install");
+
+    if (skip) {
+      log.blue("🔗 Skipping dependencies installation");
+      return;
+    }
+
+    const packageManager =
+      this.flags.find((f) => f.flag === "-p")?.value || "npm";
+    const installCommand = packageManager === "npm" ? "install" : "add";
 
     await exec(
       `cd ${this.projectName} && ${packageManager} ${installCommand} routeify-express`
@@ -96,6 +110,22 @@ export class RouteifyFactory {
     }
   }
 
+  private async initGit() {
+    const skip = this.flags.find((f) => f.flag === "--no-git");
+
+    if (skip) {
+      log.blue("🔗 Skipping git initialization");
+      return;
+    }
+
+    try {
+      log.blue("🔗 Initializing git");
+      await exec(`cd ${this.projectName} && git init`);
+    } catch (error) {
+      log.red("Error initializing git");
+    }
+  }
+
   private parseArgs(args: string[]): string[] {
     /*                 #0  #1              #any #0
       bash -> routeify new name-of-project -p package-manager
@@ -104,35 +134,54 @@ export class RouteifyFactory {
     const parsedArgs = args.slice(2);
     const [command, projectName] = parsedArgs;
 
-    if (!commands.includes(command)) throw new Error(flags["-help"][0]);
-    this.command = command;
-
-    const isInvalidName = !projectName || projectName.startsWith("-");
-    if (isInvalidName) throw new Error("Nome do projeto invalido");
-    this.projectName = projectName;
+    this.validateCommand(command);
+    this.validateProjectName(projectName);
 
     this.flags = parsedArgs.reduce((acc, currentArg, index) => {
-      if (!currentArg.startsWith("-")) return acc;
+      const validStartFlag =
+        currentArg.startsWith("-") || currentArg.startsWith("--");
+      if (!validStartFlag) return acc;
 
-      let existFlag = currentArg.startsWith("-") && flags[currentArg];
-      if (!existFlag) throw new Error(`Flag ${currentArg} invalida`);
+      let existFlag = validStartFlag && Object.keys(flags).includes(currentArg);
+      if (!existFlag) throw new Error(`Flag ${currentArg} inválida.`);
 
+      let existFlagValues = flags[currentArg]?.length > 0;
       const flag = currentArg;
-      const valueOfFlag = parsedArgs[index + 1];
-      const value = flags[currentArg].find((v) => v == valueOfFlag);
-
-      if (!value)
-        throw new Error(
-          `O valor ${valueOfFlag} informado na flag ${flag} não é valido. use: ${flags[currentArg]}`
-        );
 
       if (acc.find((v) => v.flag == flag))
         throw new Error(`A flag ${flag} foi informada mais de uma vez`);
 
-      acc.push({ flag, value });
+      if (existFlagValues) {
+        const valueOfFlag = parsedArgs[index + 1];
+        const value = flags[currentArg].find((v) => v == valueOfFlag);
+
+        if (!value)
+          throw new Error(
+            `O valor ${valueOfFlag} informado na flag ${flag} não é valido. use: ${flags[currentArg]}`
+          );
+
+        acc.push({ flag, value });
+      } else acc.push({ flag, value: true });
+
       return acc;
     }, []);
 
     return parsedArgs;
+  }
+
+  private validateProjectName(projectName: string) {
+    const isInvalidName =
+      !projectName ||
+      projectName.startsWith("-") ||
+      projectName.startsWith("--");
+
+    if (isInvalidName) throw new Error("Nome do projeto invalido");
+
+    this.projectName = projectName;
+  }
+
+  private validateCommand(command: string) {
+    if (!commands.includes(command)) throw new Error(flags["--help"][0]);
+    this.command = command;
   }
 }

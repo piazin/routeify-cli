@@ -1,9 +1,14 @@
 export const flags = {
   "-p": ["npm", "pnpm", "yarn"],
-  "-help": [
+  "--no-git": undefined,
+  "--no-install": undefined,
+  "--help": [
     `
+    Usage: routeify new <project-name> [options]
+
     -p: package manager to use
-    -help: show help
+    --no-git: do not initialize git
+    --help: show help
 
     Example:
       routeify new name-of-project -p pnpm

@@ -17,7 +17,7 @@ npm i routeify-cli -g
 Aqui está um exemplo básico de como usar a biblioteca:
 
 ```bash
-routeify-cli new my-project-name
+routeify new my-project-name
 ```
 
 ### Flags Disponíveis
