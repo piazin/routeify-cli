@@ -17,14 +17,14 @@ npm i routeify-cli -g
 Aqui está um exemplo básico de como usar a biblioteca:
 
 ```bash
-routeify new my-project-name
+routeify new my-project-name [options]
 ```
 
 ### Flags Disponíveis
 
 - `-p` - Define o gerenciador de pacotes do projeto (npm || yarn || pnpm)
-- `--no-git` - Não inicia um repositório git no projeto (em breve)
-- `--no-install` - Não instala as dependências do projeto (em breve)
+- `--no-git` - Não inicia um repositório git no projeto
+- `--no-install` - Não instala as dependências do projeto
 
 ## 📄 Licença
 
