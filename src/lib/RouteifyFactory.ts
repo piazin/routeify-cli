@@ -6,6 +6,7 @@ import { exec as execCB } from "child_process";
 import { log } from "@/services/log";
 import { commands, flags } from "@/constants";
 import { contens } from "@/templates/simple-project";
+import { getVersion } from "@/utils/get-version";
 
 const exec = promisify(execCB);
 
@@ -133,6 +134,11 @@ export class RouteifyFactory {
 
     const parsedArgs = args.slice(2);
     const [command, projectName] = parsedArgs;
+
+    if (parsedArgs.includes("--version")) {
+      log.green(getVersion());
+      process.exit(0);
+    }
 
     this.validateCommand(command);
     this.validateProjectName(projectName);
