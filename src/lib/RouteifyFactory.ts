@@ -44,6 +44,20 @@ export class RouteifyFactory {
 
     log.blue(`📦 Initializing ${packageManager}`);
     await exec(`cd ${this.projectName} && ${packageManager} ${initCommand}`);
+    const packageJson = await fs.readFile(
+      join(process.cwd(), this.projectName, "package.json"),
+      "utf-8"
+    );
+
+    const parsedPackageJson = JSON.parse(packageJson);
+    parsedPackageJson.scripts = {
+      dev: "routeify dev",
+    };
+
+    await fs.writeFile(
+      join(process.cwd(), this.projectName, "package.json"),
+      JSON.stringify(parsedPackageJson, null, 2)
+    );
   }
 
   private async installDependencies() {

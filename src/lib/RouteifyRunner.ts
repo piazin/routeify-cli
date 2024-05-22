@@ -32,9 +32,9 @@ export class RouteifyRunner {
   }
 
   private dev() {
-    log.startSpinner();
+    log.startSpinner("starting server...");
 
-    const process = spawn("npx", ["tsx", this.cliJson.entryFile], {
+    const process = spawn("npx", ["tsx watch", this.cliJson.entryFile], {
       cwd: this.cliJson.rootDir,
       stdio: ["inherit", "pipe", "pipe"],
     });
