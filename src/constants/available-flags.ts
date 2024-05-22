@@ -5,13 +5,15 @@ export const flags = {
   "--help": [
     `
     Usage: routeify new <project-name> [options]
-
+    
     -p: package manager to use
     --no-git: do not initialize git
     --help: show help
-
+    
     Example:
-      routeify new name-of-project -p pnpm
+    routeify new name-of-project -p pnpm
+    
+    Usage: routeify dev 
   `,
   ],
 } as {
