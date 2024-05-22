@@ -68,7 +68,7 @@ class Log {
       }
 
       this.l.write(this.green(frame, { return: true }));
-      this.l.write(this.green(" " + message, { return: true }));
+      this.l.write(this.green(` ${message ? message : ""}`, { return: true }));
       rdl.cursorTo(process.stdout, 0);
 
       currentFrame =
