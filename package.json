@@ -1,6 +1,6 @@
 {
   "name": "routeify-cli",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": " A CLI tool to generate routeify-express project",
   "main": "dist/index.js",
   "bin": {
@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "exit 0",
-    "deploy": "tsup && npm version patch && npm publish"
+    "deploy": "tsup && npm publish"
   },
   "keywords": [
     "routeify-express",
@@ -21,5 +21,8 @@
     "@types/node": "^20.11.25",
     "tsup": "^8.0.2",
     "typescript": "^5.4.2"
+  },
+  "dependencies": {
+    "tsx": "^4.11.0"
   }
 }
